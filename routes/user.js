@@ -93,5 +93,35 @@ router.post('/forgot-pwd', async (req, res) => {
     }
 });
 
+router.post('/reset-pwd/:token', async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    
+    try {
+        const decoded = jwt.verify(token, process.env.KEY);
+        const id = decoded.id;
+
+        const hashPassword = await bcrypt.hash(password, 10);
+        await User.findByIdAndUpdate(
+            id,
+            {
+                password: hashPassword
+            }
+        );
+
+        return res.json({ status: true, message: 'Password reset successfully' });
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            return res.json({ status: false, message: 'Token has expired, please request a new one' });
+        } else if (err instanceof jwt.JsonWebTokenError) {
+            return res.json({ status: false, message: 'Invalid token, please request a new one' });
+        } else {
+            console.error('Error resetting password:', err);
+            return res.json({ status: false, message: 'An unexpected error occurred' });
+        }
+    }
+});
+
+
 
 export {router as UserRouter}
