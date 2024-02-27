@@ -3,9 +3,10 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { UserRouter } from "./routes/user";
+import { UserRouter } from "./routes/user.js";
 dotenv.config()
 const app = express();
+app.use(cors())
 app.use(express.json());
 app.use('/auth', UserRouter)
 
