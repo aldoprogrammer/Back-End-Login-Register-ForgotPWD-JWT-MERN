@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
     })
     res.cookie('token', token, {maxAge: 3600000, httpOnly: true})
 
-    return res.json({status: true, message: 'User logged in'})
+    return res.json({status: true, message: 'User Login Succesfully'})
     
 })
 
@@ -138,6 +138,11 @@ const verifyUser = async (req, res, next) => {
 }
 router.get('/verify', verifyUser, (req, res) => {
     return res.json({status: true, message: 'User verified'})
+})
+
+router.get('/logout', (req, res) => {
+    res.clearCookie('token')
+    return res.json({status: true, message: 'User logged out'})
 })
 
 
