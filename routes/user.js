@@ -27,25 +27,26 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    const {email, password} = req.body;
-    const user = await User.findOne({email})
-    if(!user) {
-        return res.json({status: false, message: 'User not found'})
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.json({ status: false, message: 'User not found' });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password)
-    if(!validPassword) {
-        return res.json({status: false, message: 'Password is wrong'})
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+        return res.json({ status: false, message: 'Password is wrong' });
     }
 
-    const token = jwt.sign({username: user.username}, process.env.KEY, {
+    const token = jwt.sign({ username: user.username }, process.env.KEY, {
         expiresIn: '1h'
-    })
-    res.cookie('token', token, {maxAge: 3600000, httpOnly: true,  sameSite: 'none', secure: true})
+    });
 
-    return res.json({status: true, message: 'User Login Succesfully'})
-    
-})
+    // Send the token along with the response
+    return res.json({ status: true, message: 'User Login Successfully', token });
+});
 
 
 router.post('/forgot-pwd', async (req, res) => {
@@ -120,32 +121,32 @@ router.post('/reset-pwd/:token', async (req, res) => {
     }
 });
 
-const verifyUser = async (req, res, next) => {
-    try {
-        const token = req.cookies.token;
-        if (!token) {
-            // Redirect to login page if token is missing
-            return res.redirect('/login');
-        }
+// const verifyUser = async (req, res, next) => {
+//     try {
+//         const token = req.cookies.token;
+//         if (!token) {
+//             // Redirect to login page if token is missing
+//             return res.redirect('/login');
+//         }
 
-        const decoded = await jwt.verify(token, process.env.KEY);
-        next();
-    } catch (err) {
-        // Redirect to login page if token is invalid
-        return res.redirect('/login');
-    }
-}
+//         const decoded = await jwt.verify(token, process.env.KEY);
+//         next();
+//     } catch (err) {
+//         // Redirect to login page if token is invalid
+//         return res.redirect('/login');
+//     }
+// }
 
 
 
-router.get('/verify', verifyUser, (req, res) => {
-    return res.json({status: true, message: 'User verified'})
-})
+// router.get('/verify', verifyUser, (req, res) => {
+//     return res.json({status: true, message: 'User verified'})
+// })
 
-router.get('/logout', (req, res) => {
-    res.clearCookie('token')
-    return res.json({status: true, message: 'User logged out'})
-})
+// router.get('/logout', (req, res) => {
+//     res.clearCookie('token')
+//     return res.json({status: true, message: 'User logged out'})
+// })
 
 
 
