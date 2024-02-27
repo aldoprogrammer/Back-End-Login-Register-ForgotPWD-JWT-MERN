@@ -6,8 +6,12 @@ import cors from "cors";
 import { UserRouter } from "./routes/user.js";
 dotenv.config()
 const app = express();
-app.use(cors())
+const FRONTEND_URL = process.env.FRONTEND_URL
+app.use(cors({
+    origin: [FRONTEND_URL],
+}));
 app.use(express.json());
+app.use(cookieParser());
 app.use('/auth', UserRouter)
 
 const mongodbUri = process.env.MONGODB_URI;
