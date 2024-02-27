@@ -79,10 +79,8 @@ router.post('/forgot-pwd', async (req, res) => {
         
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
-                console.error("Error sending email:", error);
                 return res.json({ status: false, message: 'Email not sent' + error })
             } else {
-                console.log("Email sent:", info.response);
                 return res.json({ status: true, message: 'Email sent: ' + info.response })
             }
         });
