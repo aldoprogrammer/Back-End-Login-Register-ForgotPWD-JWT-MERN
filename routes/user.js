@@ -123,5 +123,25 @@ router.post('/reset-pwd/:token', async (req, res) => {
 });
 
 
+router.get('/verify', verifyUser, (req, res) => {
+    return res.json({status: true, message: 'User verified'})
+})
+
+const verifyUser = async (req, res, next) => {
+    try {
+        const token = req.cookies.token
+        if(!token) {
+            return res.json({status: false, message: 'User not logged in'})
+        }    
+        const decoded = await jwt.verify(token, process.env.KEY)
+        next();
+    } catch (err) {
+        return res.json({status: false, message: 'User not logged in'})
+    }
+    
+
+}
+
+
 
 export {router as UserRouter}
