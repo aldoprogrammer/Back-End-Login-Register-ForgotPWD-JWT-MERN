@@ -122,11 +122,6 @@ router.post('/reset-pwd/:token', async (req, res) => {
     }
 });
 
-
-router.get('/verify', verifyUser, (req, res) => {
-    return res.json({status: true, message: 'User verified'})
-})
-
 const verifyUser = async (req, res, next) => {
     try {
         const token = req.cookies.token
@@ -141,6 +136,11 @@ const verifyUser = async (req, res, next) => {
     
 
 }
+router.get('/verify', verifyUser, (req, res) => {
+    return res.json({status: true, message: 'User verified'})
+})
+
+
 
 
 
