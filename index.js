@@ -11,7 +11,12 @@ const app = express();
 const FRONTEND_URL = process.env.FRONTEND_URL;
 console.log("FRONTEND_URL:", FRONTEND_URL);
 
-app.use(cors());
+// Set up CORS to allow requests only from a specific origin
+const corsOptions = {
+  origin: FRONTEND_URL, // Change this to the specific origin you want to allow
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
