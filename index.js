@@ -13,9 +13,15 @@ app.use(cors({
     origin: FRONTEND_URL,
     credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use('/auth', UserRouter)
+
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache');
+    next();
+});
 
 const mongodbUri = process.env.MONGODB_URI;
 mongoose.connect(mongodbUri)
